@@ -1,39 +1,43 @@
-# Mobile ALOHA: Learning Bimanual Mobile Manipulation with Low-Cost Whole-Body Teleoperation
+# Mobile ALOHA: 저렴한 전신 원격 조작을 통한 양손 이동 조작 학습
 
 
-#### Project Website: https://mobile-aloha.github.io/
+#### 프로젝트 웹사이트: https://mobile-aloha.github.io/
 
-This codebase is forked from the [ALOHA repo](https://github.com/tonyzhaozh/aloha), and contains implementation for teleoperation and data collection with the Mobile ALOHA hardware.
-To build ALOHA, follow the [Hardware Assembly Tutorial](https://docs.google.com/document/d/1_3yhWjodSNNYlpxkRCPIlvIAaQ76Nqk2wsqhnEVM6Dc) and the quick start guide below.
-To train imitation learning algorithms, you would also need to install [ACT for Mobile ALOHA](https://github.com/MarkFzp/act-plus-plus) which is forked from [ACT](https://github.com/tonyzhaozh/act).
+코드베이스는 ALOHA 리포지토리: [ALOHA repo](https://github.com/tonyzhaozh/aloha), 에서 분기되었으며, Mobile ALOHA 하드웨어를 사용한 원격 조작 및 데이터 수집을 위한 구현을 포함하고 있습니다.
 
-### Repo Structure
-- ``config``: a config for each robot, designating the port they should bind to, more details in quick start guide.
-- ``launch``: a ROS launch file for all 4 cameras and all 4 robots.
-- ``aloha_scripts``: python code for teleop and data collection
+TALOHA를 구축하려면 하드웨어 조립 튜토리얼: [Hardware Assembly Tutorial](https://docs.google.com/document/d/1_3yhWjodSNNYlpxkRCPIlvIAaQ76Nqk2wsqhnEVM6Dc) 과 아래의 빠른 시작 가이드를 따르세요.
 
-## Quick start guide
+모방 학습 알고리즘을 훈련시키려면 ACT for Mobile ALOHA: [ACT for Mobile ALOHA](https://github.com/MarkFzp/act-plus-plus) which is forked from [ACT](https://github.com/tonyzhaozh/act)도 설치해야 합니다.
 
-### Software selection -- OS:
+### 리포지토리 구조
+- ``config``: 각 로봇의 구성 파일로, 바인딩해야 하는 포트를 지정합니다. 자세한 내용은 빠른 시작 가이드를 참조하세요.
+- ``launch``: 4대의 카메라와 4대의 로봇을 위한 ROS 실행 파일입니다.
+- ``aloha_scripts``: 원격 조작 및 데이터 수집을 위한 Python 코드입니다.
 
-Currently tested and working configurations: 
+## 빠른 시작 가이드
+
+### 소프트웨어 선택 - 운영 체제:
+
+현재 테스트 및 작동하는 구성:
 - :white_check_mark: Ubuntu 18.04 + ROS 1 noetic
 - :white_check_mark: Ubuntu 20.04 + ROS 1 noetic
 
-Ongoing testing (compatibility effort underway):
+진행 중인 테스트(호환성 작업 진행 중):
 - :construction: ROS 2
 - :construction: >= Ubuntu 22.04
 
-### Software installation - ROS:
-1. Install ROS and interbotix software following https://docs.trossenrobotics.com/interbotix_xsarms_docs/
-2. This will create the directory ``~/interbotix_ws`` which contains ``src``.
-3. git clone this repo inside ``~/interbotix_ws/src``
+### 소프트웨어 설치 - ROS:
+
+1. [https://docs.trossenrobotics.com/interbotix_xsarms_docs/](https://docs.trossenrobotics.com/interbotix_xsarms_docs/)에 따라 ROS 및 interbotix 소프트웨어를 설치합니다.
+2. 이렇게 하면 ``src``를 포함하는 디렉토리 ``~/interbotix_ws``가 생성됩니다.
+3. 이 저장소를 ``~/interbotix_ws/src`` 안에 git clone합니다.
 4. ``source /opt/ros/noetic/setup.sh && source ~/interbotix_ws/devel/setup.sh``
 5. ``sudo apt-get install ros-noetic-usb-cam && sudo apt-get install ros-noetic-cv-bridge``
-6. run ``catkin_make`` inside ``~/interbotix_ws``, make sure the build is successful
-7. go to ``~/interbotix_ws/src/interbotix_ros_toolboxes/interbotix_xs_toolbox/interbotix_xs_modules/src/interbotix_xs_modules/arm.py``, find function ``publish_positions``.
-   Change ``self.T_sb = mr.FKinSpace(self.robot_des.M, self.robot_des.Slist, self.joint_commands)`` to ``self.T_sb = None``.
-   This prevents the code from calculating FK at every step which delays teleoperation.
+6. ``~/interbotix_ws`` 내에서 ``catkin_make``를 실행하고 빌드가 성공적인지 확인합니다.
+7. ``~/interbotix_ws/src/interbotix_ros_toolboxes/interbotix_xs_toolbox/interbotix_xs_modules/src/interbotix_xs_modules/arm.py``로 이동하여 함수 ``publish_positions``를 찾습니다.
+   ``self.T_sb = mr.FKinSpace(self.robot_des.M, self.robot_des.Slist, self.joint_commands)``를 ``self.T_sb = None``으로 변경하세요.
+   이렇게 하면 코드가 매 단계마다 FK를 계산하지 않아 원격 조작이 지연되는 것을 방지할 수 있습니다.
+
 ### Hardware installation:
 
 The goal of this section is to run ``roslaunch aloha 4arms_teleop.launch``, which starts
